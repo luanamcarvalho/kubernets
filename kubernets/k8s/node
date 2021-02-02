@@ -1,0 +1,17 @@
+- name: Copy the join command to {{ k8s_cluster_name }} cluster
+  copy: 
+    src: "./{{ k8s_cluster_name }}-join-command" 
+    dest: /home/{{ k8s_node_admin_user }}/{{ k8s_cluster_name }}-join-command
+    owner: "{{ k8s_node_admin_user }}"
+    group: "{{ k8s_node_admin_group }}"
+    mode: 0760  
+- name: Join the node to cluster {{ k8s_cluster_name }}
+  command: sh /home/{{ k8s_node_admin_user }}/{{ k8s_cluster_name }}-join-command
+
+  dependencies:
+  - { role: add_packages,
+    linux_add_packages_repositories: "{{ k8s_common_add_packages_repositories }}",
+    linux_add_packages_keys: "{{ k8s_common_add_packages_keys }}",
+    linux_add_packages_names: "{{ k8s_common_add_packages_names }}",
+    linux_remove_packages_names: "{{ k8s_common_remove_packages_names }}"
+    }
